@@ -9,11 +9,11 @@ var mongoose = require('mongoose');
 require('./models/Messages');
 require('./models/Rooms');
 
-var routes = require('./routes/index')(io);
-
 var app = express();
 var io = socketIo();
 app.io = io;
+
+var routes = require('./routes/index')(io);
 
 mongoose.connect('mongodb://localhost/chat');
 

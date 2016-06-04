@@ -5,23 +5,54 @@ module.exports = function(io) {
     Room = mongoose.model('Room'),
     Message = mongoose.model('Message');
 
+  router.param('room', function(req, res, next, id) {
+    var query = Room.findById(id);
+
+    query.exec(function (err, room){
+      if (err) { return next(err); }
+      if (!room) { return next(new Error('can\'t find room')); }
+
+      req.room = room;
+      return next();
+    });
+  });
+
+  router.get('/rooms', function(req, res, next) {
+    Room.find(function(err, rooms) {
+      if(err){ return next(err); }
+
+      res.json(rooms);
+    });
+  });
+
   router.post('/rooms', function(req, res, next) {
     var room = new Room(req.body);
 
     room.save(function(err, room){
       if(err){ return next(err); }
-
+      io.emit('action', {
+        type: 'ADD_ROOM',
+        payload: {
+          data: room
+        }
+      });
       res.json(room);
     });
   });
 
-  router.post('/messages', function(req, res, next) {
+  router.post('/rooms/:room/messages', function(req, res, next) {
     var message = new Message(req.body);
+    message.room = req.room;
 
-    message.save(function(err, room){
+    message.save(function(err, message){
       if(err){ return next(err); }
 
-      res.json(message);
+      req.room.messages.push(message);
+      req.room.save(function(err, room) {
+        if(err){ return next(err); }
+
+        res.json(message);
+      });
     });
   });
 
