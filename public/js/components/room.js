@@ -4,27 +4,57 @@ import { bindActionCreators } from 'redux';
 import * as RoomActions from '../actions/roomActions';
 
 export default class Room extends Component {
-  renderRooms() {
-    return this.props.rooms.map((room) => {
-      const className = (room._id == this.props.currentRoom._id) ? "selected" : null;
+  state = {
+    messageInput: ""
+  }
+
+  renderMessages() {
+    const roomIdx = this.props.rooms.map((room) => {
+      return room._id
+    }).indexOf(this.props.currentRoom);
+
+    return this.props.rooms[roomIdx].messages.map((message) => {
       return(
         <li
-          key={room._id}
-          className={className}
-          onClick={() => this.props.actions.selectRoom(room)}
-          >
-          {room.name}
+          key={message._id}
+        >
+          {message.author}: {message.message}
         </li>
       )
     });
   }
 
+  onChange = (event) => {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  onSubmit = (event) => {
+    event.preventDefault();
+    this.props.actions.sendMessage({
+      author: "Andrew",
+      message: this.state.messageInput,
+      room: this.props.currentRoom
+    });
+    this.setState({messageInput: ""});
+  }
+
   render() {
     return (
-      <div className="room-list">
-        <ul className="room-list">
-          {this.renderRooms()}
+      <div className="room">
+        <ul className="message-list">
+          {this.props.currentRoom ? this.renderMessages() : null }
         </ul>
+        <form
+          onSubmit={this.onSubmit}
+        >
+          <input
+            type="text"
+            onChange={this.onChange}
+            name="messageInput"
+            value={this.state.messageInput}
+          />
+          <button>Submit</button>
+        </form>
       </div>
     );
   }
@@ -43,4 +73,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoomList);
+export default connect(mapStateToProps, mapDispatchToProps)(Room);

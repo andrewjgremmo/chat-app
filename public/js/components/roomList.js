@@ -10,7 +10,7 @@ export default class RoomList extends Component {
 
   renderRooms() {
     return this.props.rooms.map((room) => {
-      const className = (room._id == this.props.currentRoom._id) ? "selected" : null;
+      const className = (room._id == this.props.currentRoom) ? "selected" : null;
       return(
         <li
           key={room._id}

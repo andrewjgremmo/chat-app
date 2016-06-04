@@ -18,7 +18,9 @@ module.exports = function(io) {
   });
 
   router.get('/rooms', function(req, res, next) {
-    Room.find(function(err, rooms) {
+    Room.find({private: false})
+      .populate('messages')
+      .exec(function(err, rooms) {
       if(err){ return next(err); }
 
       res.json(rooms);
@@ -50,7 +52,14 @@ module.exports = function(io) {
       req.room.messages.push(message);
       req.room.save(function(err, room) {
         if(err){ return next(err); }
+        message.room = req.room._id;
 
+        io.emit('action', {
+          type: 'ADD_MESSAGE',
+          payload: {
+            data: message
+          }
+        });
         res.json(message);
       });
     });
