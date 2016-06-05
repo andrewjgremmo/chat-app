@@ -23,7 +23,8 @@ export default class Chat extends Component {
           <UserList
             currentRoom={this.props.currentRoom}
             rooms={this.props.rooms}
-            user={this.props.user} />
+            user={this.props.user}
+            users={this.props.users} />
         </div>
       );
     } else {
@@ -35,6 +36,7 @@ export default class Chat extends Component {
 function mapStateToProps(state) {
   return {
     user: state.user.user,
+    users: state.user.users,
     rooms: state.rooms.rooms,
     currentRoom: state.rooms.currentRoom
   };

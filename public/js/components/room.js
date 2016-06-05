@@ -10,7 +10,6 @@ export default class Room extends Component {
       return room._id
     }).indexOf(this.props.currentRoom);
 
-    console.log(roomIdx, this.props.rooms[roomIdx]);
     return this.props.rooms[roomIdx].messages.map((message) => {
       return(
         <li

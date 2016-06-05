@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 
 export default class UserList extends Component {
   renderUsers() {
-    console.log(this.props);
     const roomIdx = this.props.rooms.map((room) => {
       return room._id;
     }).indexOf(this.props.currentRoom);
 
-    return this.props.rooms[roomIdx].users.map((user) => {
-      return(
-        <li key={user._id}>{user.username}</li>
-      )
+    return this.props.users.map((user) => {
+      if (user.rooms.indexOf(this.props.currentRoom) > -1) {
+        return(
+          <li key={user._id}>{user.username}</li>
+        )
+      }
     });
   }
 

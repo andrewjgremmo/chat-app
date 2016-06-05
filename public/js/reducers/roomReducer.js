@@ -3,8 +3,6 @@ import {
   ADD_ROOM,
   ADD_MESSAGE,
   SELECT_ROOM,
-  ADD_USER,
-  REMOVE_USER
 } from '../actions/roomActions';
 
 const INITIAL_STATE = { currentRoom: undefined, rooms: [] };
@@ -38,19 +36,6 @@ export default function(state = INITIAL_STATE, action) {
         rooms: action.payload.data,
         currentRoom: action.payload.data[0]._id
       };
-    case ADD_USER:
-      return { ...state, rooms: state.rooms.map((room) => {
-          if (action.payload.data.rooms.indexOf(room._id) > -1 || !room.private) {
-            return { ...room, users: room.users.concat([action.payload.data]) }
-          } else {
-            return room;
-          }
-        })
-      };
-    case REMOVE_USER:
-      return { ...state, rooms: state.rooms.map((room) => {
-        return { ...room, users: room.users.filter((user) => { user._id != action.payload.data._id })}
-      })}
     default:
       return state;
   }

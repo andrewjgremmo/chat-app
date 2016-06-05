@@ -6,8 +6,6 @@ export const GET_PUBLIC_ROOM_LIST = 'GET_PUBLIC_ROOM_LIST';
 export const SELECT_ROOM = 'SELECT_ROOM';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const ADD_MESSAGE = 'ADD_MESSAGE';
-export const ADD_USER = 'ADD_USER';
-export const REMOVE_USER = 'REMOVE_USER';
 
 export function getRooms(user) {
   const request = axios.get(`/users/${user}/rooms`);

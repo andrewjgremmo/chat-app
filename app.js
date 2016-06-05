@@ -46,7 +46,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    // res.json(err.message);
+    res.json(err.message);
   });
 }
 
@@ -54,10 +54,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  // res.render('error', {
-  //   message: err.message,
-  //   error: {}
-  // });
+  res.json(err.message);
 });
 
 var users = {
@@ -65,24 +62,27 @@ var users = {
 };
 
 io.on("connection", function( socket ) {
-  for (var id in users) {
-    if (users.hasOwnProperty(id)) {
-      socket.emit('action', {
-        type: 'ADD_USER',
-        payload: {
-          data: users[id]
-        }
-      });
-    }
-  }
-
   socket.on("register", function (data) {
     if (data.payload.statusText == 'OK') {
       users[socket.id] = data.payload.data;
       users[socket.id].rooms.forEach(function(room) {
         socket.join(room);
-        console.log(socket);
       });
+
+      for (var id in users) {
+        if (id == socket.id) {
+          continue;
+        }
+
+        if (users.hasOwnProperty(id)) {
+          socket.emit('action', {
+            type: 'ADD_USER',
+            payload: {
+              data: users[id]
+            }
+          });
+        }
+      }
 
       socket.broadcast.emit('action', {
         type: 'ADD_USER',

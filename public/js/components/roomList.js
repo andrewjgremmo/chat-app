@@ -24,6 +24,7 @@ export default class RoomList extends Component {
     if (this.props.user) {
       return (
         <div className="room-list">
+          <span>Search Rooms</span>
           <ul className="room-list">
             {this.renderRooms()}
           </ul>

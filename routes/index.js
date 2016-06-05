@@ -79,9 +79,9 @@ module.exports = function(io) {
     var user = User.findOne({'username': req.body.username}, function(err, user) {
       if (!user) {
         user = new User(req.body);
-        var generalRoom = Room.findOne({'name': 'General'}, function(err, room) {
-          if (generalRoom) {
-            user.rooms.push(generalRoom._id);
+        Room.findOne({'name': 'General'}, function(err, room) {
+          if (room) {
+            user.rooms.push(room);
           }
 
           user.save(function(err, user) {
