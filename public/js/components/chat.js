@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CreateRoom from '../components/createRoom';
 import CurrentRoomList from '../components/currentRoomList';
-import Room from '../components/room';
+import InviteUser from '../components/inviteUser';
 import PublicRoomList from '../components/publicRoomList';
-import UserList from '../components/userList';
+import RoomUserList from '../components/roomUserList';
+import Room from '../components/room';
+
 import * as RoomActions from '../actions/roomActions';
 
 export default class Chat extends Component {
@@ -24,13 +26,20 @@ export default class Chat extends Component {
           <CurrentRoomList
             actions={this.props.actions}
             currentRoomList={this.props.currentRoomList}
+            currentRoom={this.props.currentRoom}
             user={this.props.user} />
           <Room
             actions={this.props.actions}
             currentRoom={this.props.currentRoom}
             currentRoomList={this.props.currentRoomList}
             user={this.props.user} />
-          <UserList
+          <RoomUserList
+            currentRoom={this.props.currentRoom}
+            currentRoomList={this.props.currentRoomList}
+            user={this.props.user}
+            users={this.props.users} />
+          <InviteUser
+            actions={this.props.actions}
             currentRoom={this.props.currentRoom}
             currentRoomList={this.props.currentRoomList}
             user={this.props.user}

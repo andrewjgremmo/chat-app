@@ -67,6 +67,16 @@ module.exports = function(io) {
         Room.findOne({'name': 'General'}, function(err, room) {
           if (room) {
             user.rooms.push(room);
+          } else {
+            var room = new Room({'name': 'General', 'private': false});
+            room.save(function(err, room) {
+              if (err) { return next(err); }
+              user.rooms.push(room);
+              user.save(function(err, user) {
+                if (err) { return next(err); }
+                res.json(user);
+              });
+            });
           }
 
           user.save(function(err, user) {

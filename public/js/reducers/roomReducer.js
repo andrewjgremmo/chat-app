@@ -12,9 +12,7 @@ const INITIAL_STATE = { currentRoom: undefined, currentRoomList: [], publicRoomL
 export default function(state = INITIAL_STATE, action) {
   switch(action.type) {
     case ADD_ROOM:
-      return { ...state,
-        publicRoomList: state.currentRoomList.concat([action.payload.data])
-      }
+      return { ...state, publicRoomList: state.publicRoomList.concat([action.payload.data]) };
     case ADD_MESSAGE:
       const roomIdx = state.currentRoomList.map((room) => {
         return room._id

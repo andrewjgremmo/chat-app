@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 import socketMiddleware from './middleware/socketMiddleware';
 import reducers from './reducers/';
 import promise from 'redux-promise';
+require("../stylesheets/app.scss");
 
 const socket = io();
 const createStoreWithMiddleware = applyMiddleware(

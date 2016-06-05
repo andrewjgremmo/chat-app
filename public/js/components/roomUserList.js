@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class UserList extends Component {
+export default class RoomUserList extends Component {
   renderUsers() {
     const roomIdx = this.props.currentRoomList.map((room) => {
       return room._id;
@@ -18,8 +18,8 @@ export default class UserList extends Component {
   render() {
     if (this.props.currentRoom) {
       return (
-        <div className="user-list">
-          <ul className="user-list">
+        <div className="room-users">
+          <ul className="room-user-list">
             {this.renderUsers()}
           </ul>
         </div>
