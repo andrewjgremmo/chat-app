@@ -4,22 +4,23 @@ import Root from './containers/root';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import io from 'socket.io-client';
+import socketMiddleware from './middleware/socketMiddleware';
 import reducers from './reducers/';
 import promise from 'redux-promise';
 
+const socket = io();
 const createStoreWithMiddleware = applyMiddleware(
-  promise
+  promise,
+  socketMiddleware(socket)
 )(createStore);
 const store = createStoreWithMiddleware(reducers);
-
-const socket = io();
 
 socket.on('action', function (action) {
   store.dispatch(action);
 });
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={store} socket={socket}>
     <Root />
   </Provider>
 , document.querySelector('#root'));

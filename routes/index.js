@@ -3,7 +3,8 @@ module.exports = function(io) {
     router = express.Router(),
     mongoose = require('mongoose'),
     Room = mongoose.model('Room'),
-    Message = mongoose.model('Message');
+    Message = mongoose.model('Message'),
+    User = mongoose.model('User');
 
   router.param('room', function(req, res, next, id) {
     var query = Room.findById(id);
@@ -62,6 +63,20 @@ module.exports = function(io) {
         });
         res.json(message);
       });
+    });
+  });
+
+  router.post('/users', function(req, res, next) {
+    var user = User.findOne({'username': req.body.username}, function(err, user) {
+      if (!user) {
+        user = new User(req.body);
+        user.save(function(err, user) {
+          if (err) { return next(err); }
+          res.json(user);
+        });
+      } else {
+        res.json(user);
+      }
     });
   });
 

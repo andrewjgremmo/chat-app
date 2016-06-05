@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 require('./models/Messages');
 require('./models/Rooms');
+require('./models/Users');
 
 var app = express();
 var io = socketIo();
@@ -62,9 +63,31 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var users = {
+
+};
+
 io.on("connection", function( socket ) {
-    console.log( "A user connected" );
+  socket.emit("ALL_USERS", users);
+
+  socket.on("register", function (data) {
+    if (data.payload.statusText == 'OK') {
+      users[socket.id] = data.payload.data;
+      users[socket.id].rooms.forEach(function(room) {
+        socket.join(room._id);
+      });
+
+      socket.broadcast.emit("ADD_USER", users[socket.id]);
+    }
+  });
+
+  socket.on("disconnect", function () {
+    socket.broadcast.emit("REMOVE_USER", users[socket.id]);
+    delete users[socket.id];
+  });
 });
+
+
 
 
 module.exports = app;

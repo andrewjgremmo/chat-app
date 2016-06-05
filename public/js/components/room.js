@@ -39,29 +39,34 @@ export default class Room extends Component {
   }
 
   render() {
-    return (
-      <div className="room">
-        <ul className="message-list">
-          {this.props.currentRoom ? this.renderMessages() : null }
-        </ul>
-        <form
-          onSubmit={this.onSubmit}
-        >
-          <input
-            type="text"
-            onChange={this.onChange}
-            name="messageInput"
-            value={this.state.messageInput}
-          />
-          <button>Submit</button>
-        </form>
-      </div>
-    );
+    if (this.props.user) {
+      return (
+        <div className="room">
+          <ul className="message-list">
+            {this.props.currentRoom ? this.renderMessages() : null }
+          </ul>
+          <form
+            onSubmit={this.onSubmit}
+          >
+            <input
+              type="text"
+              onChange={this.onChange}
+              name="messageInput"
+              value={this.state.messageInput}
+            />
+            <button>Submit</button>
+          </form>
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
 function mapStateToProps(state) {
   return {
+    user: state.user.user,
     rooms: state.rooms.rooms,
     currentRoom: state.rooms.currentRoom
   };

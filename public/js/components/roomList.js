@@ -24,18 +24,23 @@ export default class RoomList extends Component {
   }
 
   render() {
-    return (
-      <div className="room-list">
-        <ul className="room-list">
-          {this.renderRooms()}
-        </ul>
-      </div>
-    );
+    if (this.props.user) {
+      return (
+        <div className="room-list">
+          <ul className="room-list">
+            {this.renderRooms()}
+          </ul>
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }
 
 function mapStateToProps(state) {
   return {
+    user: state.user.user,
     rooms: state.rooms.rooms,
     currentRoom: state.rooms.currentRoom
   };
