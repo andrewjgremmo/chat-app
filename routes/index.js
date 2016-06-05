@@ -76,7 +76,7 @@ module.exports = function(io) {
   });
 
   router.post('/users', function(req, res, next) {
-    var user = User.findOne({'username': req.body.username}, function(err, user) {
+    User.findOne({'username': req.body.username}, function(err, user) {
       if (!user) {
         user = new User(req.body);
         Room.findOne({'name': 'General'}, function(err, room) {
@@ -102,18 +102,22 @@ module.exports = function(io) {
   });
 
   router.post('/users/:user/rooms', function(req, res, next) {
-    req.user.rooms.push(req.body.room);
-    req.user.save(function(err, user) {
-      if(err){ return next(err); }
+    Room.findById(req.body.room, function(err, room) {
+      req.user.rooms.push(room);
+      req.user.save(function(err, user) {
+        if(err){ return next(err); }
 
-      io.in(req.body.room).emit('action', {
-        type: 'ADD_USER_ROOM',
-        payload: {
-          data: user
-        }
+        io.emit('action', {
+          type: 'UPDATE_USER',
+          payload: {
+            data: user
+          }
+        });
+
+        room.populate('messages', function(err, room) {
+          res.json(room);
+        });
       });
-
-      res.json(user);
     });
   });
 
@@ -125,13 +129,13 @@ module.exports = function(io) {
     req.user.save(function(err, user) {
       if(err){ return next(err); }
 
-      io.in(req.room._id).emit('action', {
-        type: 'REMOVE_USER_ROOM',
+      io.emit('action', {
+        type: 'UPDATE_USER',
         payload: {
           data: user
         }
       });
-      res.json(user);
+      res.json(req.room);
     });
   });
 

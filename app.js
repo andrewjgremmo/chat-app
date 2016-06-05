@@ -93,6 +93,10 @@ io.on("connection", function( socket ) {
     }
   });
 
+  socket.on("joinRequest", function (room) {
+    socket.join(room);
+  });
+
   socket.on("disconnect", function () {
     socket.broadcast.emit('action', {
       type: 'REMOVE_USER',

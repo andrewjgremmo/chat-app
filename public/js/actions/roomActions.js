@@ -1,26 +1,27 @@
 import axios from 'axios';
 
 export const ADD_ROOM = 'ADD_ROOM';
-export const GET_ROOMS = 'GET_ROOMS';
-export const GET_PUBLIC_ROOM_LIST = 'GET_PUBLIC_ROOM_LIST';
+export const GET_CURRENT_ROOMS = 'GET_CURRENT_ROOMS';
+export const GET_PUBLIC_ROOMS = 'GET_PUBLIC_ROOMS';
 export const SELECT_ROOM = 'SELECT_ROOM';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const JOIN_ROOM = 'JOIN_ROOM';
 
-export function getRooms(user) {
+export function getCurrentRooms(user) {
   const request = axios.get(`/users/${user}/rooms`);
 
   return {
-    type: GET_ROOMS,
+    type: GET_CURRENT_ROOMS,
     payload: request
   };
 }
 
-export function getPublicRoomList() {
+export function getPublicRooms() {
   const request = axios.get(`/rooms`);
 
   return {
-    type: GET_PUBLIC_ROOM_LIST,
+    type: GET_PUBLIC_ROOMS,
     payload: request
   };
 }
@@ -30,6 +31,15 @@ export function sendMessage(message) {
 
   return {
     type: SEND_MESSAGE,
+    payload: request
+  };
+}
+
+export function joinRoom(user, room) {
+  const request = axios.post(`/users/${user._id}/rooms`, room);
+
+  return {
+    type: JOIN_ROOM,
     payload: request
   };
 }

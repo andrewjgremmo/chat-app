@@ -14,3 +14,4 @@ export function register(username) {
     payload: request
   };
 }
+

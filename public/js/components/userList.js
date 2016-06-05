@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class UserList extends Component {
   renderUsers() {
-    const roomIdx = this.props.rooms.map((room) => {
+    const roomIdx = this.props.currentRoomList.map((room) => {
       return room._id;
     }).indexOf(this.props.currentRoom);
 
@@ -16,7 +16,7 @@ export default class UserList extends Component {
   }
 
   render() {
-    if (this.props.user && this.props.currentRoom) {
+    if (this.props.currentRoom) {
       return (
         <div className="user-list">
           <ul className="user-list">

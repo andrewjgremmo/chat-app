@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
-export default class RoomList extends Component {
-  componentDidMount() {
-    this.props.actions.getRooms(this.props.user._id);
+export default class CurrentRoomList extends Component {
+  constructor(props) {
+    super(props);
+    this.props.actions.getCurrentRooms(this.props.user._id);
   }
 
   renderRooms() {
-    return this.props.rooms.map((room) => {
+    return this.props.currentRoomList.map((room) => {
       const className = (room._id == this.props.currentRoom) ? "selected" : null;
       return(
         <li
@@ -23,9 +24,8 @@ export default class RoomList extends Component {
   render() {
     if (this.props.user) {
       return (
-        <div className="room-list">
-          <span>Search Rooms</span>
-          <ul className="room-list">
+        <div className="current-rooms">
+          <ul className="current-room-list">
             {this.renderRooms()}
           </ul>
         </div>
