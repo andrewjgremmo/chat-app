@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as RoomActions from '../actions/roomActions';
 
 export default class Room extends Component {
   state = {
@@ -13,6 +10,7 @@ export default class Room extends Component {
       return room._id
     }).indexOf(this.props.currentRoom);
 
+    console.log(roomIdx, this.props.rooms[roomIdx]);
     return this.props.rooms[roomIdx].messages.map((message) => {
       return(
         <li
@@ -31,7 +29,7 @@ export default class Room extends Component {
   onSubmit = (event) => {
     event.preventDefault();
     this.props.actions.sendMessage({
-      author: "Andrew",
+      author: this.props.user.username,
       message: this.state.messageInput,
       room: this.props.currentRoom
     });
@@ -63,19 +61,3 @@ export default class Room extends Component {
     }
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    user: state.user.user,
-    rooms: state.rooms.rooms,
-    currentRoom: state.rooms.currentRoom
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(RoomActions, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Room);

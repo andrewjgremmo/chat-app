@@ -19,11 +19,8 @@ module.exports = function(io) {
   });
 
   router.get('/rooms', function(req, res, next) {
-    Room.find({private: false})
-      .populate('messages')
-      .exec(function(err, rooms) {
+    Room.find({private: false}, function(err, rooms) {
       if(err){ return next(err); }
-
       res.json(rooms);
     });
   });
@@ -55,7 +52,7 @@ module.exports = function(io) {
         if(err){ return next(err); }
         message.room = req.room._id;
 
-        io.emit('action', {
+        io.in(message.room).emit('action', {
           type: 'ADD_MESSAGE',
           payload: {
             data: message
@@ -66,17 +63,75 @@ module.exports = function(io) {
     });
   });
 
+  router.param('user', function(req, res, next, id) {
+    var query = User.findById(id);
+
+    query.exec(function (err, user) {
+      if (err) { return next(err); }
+      if (!user) { return next(new Error('can\'t find user')); }
+
+      req.user = user;
+      return next();
+    });
+  });
+
   router.post('/users', function(req, res, next) {
     var user = User.findOne({'username': req.body.username}, function(err, user) {
       if (!user) {
         user = new User(req.body);
-        user.save(function(err, user) {
-          if (err) { return next(err); }
-          res.json(user);
+        var generalRoom = Room.findOne({'name': 'General'}, function(err, room) {
+          if (generalRoom) {
+            user.rooms.push(generalRoom._id);
+          }
+
+          user.save(function(err, user) {
+            if (err) { return next(err); }
+            res.json(user);
+          });
         });
       } else {
         res.json(user);
       }
+    });
+  });
+
+  router.get('/users/:user/rooms', function(req, res, next) {
+    req.user.populate({path: 'rooms', populate: { path: 'messages' } }, function(err, user) {
+      res.json(user.rooms);
+    });
+  });
+
+  router.post('/users/:user/rooms', function(req, res, next) {
+    req.user.rooms.push(req.body.room);
+    req.user.save(function(err, user) {
+      if(err){ return next(err); }
+
+      io.in(req.body.room).emit('action', {
+        type: 'ADD_USER_ROOM',
+        payload: {
+          data: user
+        }
+      });
+
+      res.json(user);
+    });
+  });
+
+  router.delete('/users/:user/rooms/:room', function(req, res, next) {
+    req.user.rooms = req.user.rooms.filter(function(room) {
+      return room.toString() != req.room._id.toString();
+    });
+
+    req.user.save(function(err, user) {
+      if(err){ return next(err); }
+
+      io.in(req.room._id).emit('action', {
+        type: 'REMOVE_USER_ROOM',
+        payload: {
+          data: user
+        }
+      });
+      res.json(user);
     });
   });
 

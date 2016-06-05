@@ -2,15 +2,27 @@ import axios from 'axios';
 
 export const ADD_ROOM = 'ADD_ROOM';
 export const GET_ROOMS = 'GET_ROOMS';
+export const GET_PUBLIC_ROOM_LIST = 'GET_PUBLIC_ROOM_LIST';
 export const SELECT_ROOM = 'SELECT_ROOM';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
-export const NEW_USER = 'NEW_USER';
+export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const ADD_USER = 'ADD_USER';
+export const REMOVE_USER = 'REMOVE_USER';
 
-export function getRooms() {
-  const request = axios.get(`/rooms`);
+export function getRooms(user) {
+  const request = axios.get(`/users/${user}/rooms`);
 
   return {
     type: GET_ROOMS,
+    payload: request
+  };
+}
+
+export function getPublicRoomList() {
+  const request = axios.get(`/rooms`);
+
+  return {
+    type: GET_PUBLIC_ROOM_LIST,
     payload: request
   };
 }

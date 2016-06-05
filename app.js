@@ -16,7 +16,7 @@ app.io = io;
 
 var routes = require('./routes/index')(io);
 
-mongoose.connect('mongodb://localhost/chat');
+mongoose.connect('mongodb://127.0.0.1/chat');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -46,10 +46,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    // res.json(err.message);
   });
 }
 
@@ -57,10 +54,10 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  // res.render('error', {
+  //   message: err.message,
+  //   error: {}
+  // });
 });
 
 var users = {
@@ -68,26 +65,43 @@ var users = {
 };
 
 io.on("connection", function( socket ) {
-  socket.emit("ALL_USERS", users);
+  for (var id in users) {
+    if (users.hasOwnProperty(id)) {
+      socket.emit('action', {
+        type: 'ADD_USER',
+        payload: {
+          data: users[id]
+        }
+      });
+    }
+  }
 
   socket.on("register", function (data) {
     if (data.payload.statusText == 'OK') {
       users[socket.id] = data.payload.data;
       users[socket.id].rooms.forEach(function(room) {
-        socket.join(room._id);
+        socket.join(room);
+        console.log(socket);
       });
 
-      socket.broadcast.emit("ADD_USER", users[socket.id]);
+      socket.broadcast.emit('action', {
+        type: 'ADD_USER',
+        payload: {
+          data: users[socket.id]
+        }
+      });
     }
   });
 
   socket.on("disconnect", function () {
-    socket.broadcast.emit("REMOVE_USER", users[socket.id]);
+    socket.broadcast.emit('action', {
+      type: 'REMOVE_USER',
+      payload: {
+        data: users[socket.id]
+      }
+    });
     delete users[socket.id];
   });
 });
-
-
-
 
 module.exports = app;

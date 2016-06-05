@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as RoomActions from '../actions/roomActions';
 
 export default class RoomList extends Component {
-  componentWillMount() {
-    this.props.actions.getRooms();
+  componentDidMount() {
+    this.props.actions.getRooms(this.props.user._id);
   }
 
   renderRooms() {
@@ -37,19 +34,3 @@ export default class RoomList extends Component {
     }
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    user: state.user.user,
-    rooms: state.rooms.rooms,
-    currentRoom: state.rooms.currentRoom
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(RoomActions, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RoomList);
