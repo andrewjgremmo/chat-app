@@ -9,7 +9,8 @@ export default class PublicRoomList extends Component {
   }
 
   state = {
-    modalIsOpen: false
+    modalIsOpen: false,
+    searchInput: ""
   }
 
   openModal = () => {
@@ -20,21 +21,27 @@ export default class PublicRoomList extends Component {
     this.setState({modalIsOpen: false});
   }
 
+  onChange = (event) => {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
   renderRooms() {
     return differenceBy(this.props.publicRoomList, this.props.currentRoomList, '_id')
       .map((room) => {
-        return(
-          <li
-            key={room._id}
-            onClick={() => {
-                this.props.actions.joinRoom(this.props.user, {room: room._id});
-                this.closeModal();
+        if (room.name.toLowerCase().indexOf(this.state.searchInput.toLowerCase()) > -1) {
+          return(
+            <li
+              key={room._id}
+              onClick={() => {
+                  this.props.actions.joinRoom(this.props.user, {room: room._id});
+                  this.closeModal();
+                }
               }
-            }
-          >
-            {room.name}
-          </li>
-        )
+            >
+              {room.name}
+            </li>
+          )
+        }
     });
   }
 
@@ -59,6 +66,13 @@ export default class PublicRoomList extends Component {
       <div className="public-rooms">
         <span onClick={this.openModal}>Search Public Rooms</span>
         <Modal {...modalProps} >
+          <span>Search...</span>
+          <input
+            type="text"
+            name="searchInput"
+            value={this.state.searchInput}
+            onChange={this.onChange}
+          />
           <ul className="public-rooms-list">
             {this.renderRooms()}
           </ul>

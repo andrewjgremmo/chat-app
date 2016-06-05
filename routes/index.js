@@ -25,21 +25,6 @@ module.exports = function(io) {
     });
   });
 
-  router.post('/rooms', function(req, res, next) {
-    var room = new Room(req.body);
-
-    room.save(function(err, room){
-      if(err){ return next(err); }
-      io.emit('action', {
-        type: 'ADD_ROOM',
-        payload: {
-          data: room
-        }
-      });
-      res.json(room);
-    });
-  });
-
   router.post('/rooms/:room/messages', function(req, res, next) {
     var message = new Message(req.body);
     message.room = req.room;
@@ -102,23 +87,53 @@ module.exports = function(io) {
   });
 
   router.post('/users/:user/rooms', function(req, res, next) {
-    Room.findById(req.body.room, function(err, room) {
-      req.user.rooms.push(room);
-      req.user.save(function(err, user) {
-        if(err){ return next(err); }
+    if (req.body.room) {
+      Room.findById(req.body.room, function(err, room) {
+        req.user.rooms.push(room);
+        req.user.save(function(err, user) {
+          if(err){ return next(err); }
 
-        io.emit('action', {
-          type: 'UPDATE_USER',
-          payload: {
-            data: user
-          }
-        });
+          io.emit('action', {
+            type: 'UPDATE_USER',
+            payload: {
+              data: user
+            }
+          });
 
-        room.populate('messages', function(err, room) {
-          res.json(room);
+          room.populate('messages', function(err, room) {
+            res.json(room);
+          });
         });
       });
-    });
+    } else {
+      var room = new Room(req.body);
+      room.save(function(err, room) {
+        if (err) { return next(err); }
+
+        if (!room.private) {
+          io.emit('action', {
+            type: 'ADD_ROOM',
+            payload: {
+              data: room
+            }
+          });
+        }
+
+        req.user.rooms.push(room);
+        req.user.save(function(err, user) {
+          if(err){ return next(err); }
+
+          io.emit('action', {
+            type: 'UPDATE_USER',
+            payload: {
+              data: user
+            }
+          });
+        });
+
+        res.json(room);
+      });
+    }
   });
 
   router.delete('/users/:user/rooms/:room', function(req, res, next) {

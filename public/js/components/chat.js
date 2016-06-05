@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import CreateRoom from '../components/createRoom';
 import CurrentRoomList from '../components/currentRoomList';
 import Room from '../components/room';
 import PublicRoomList from '../components/publicRoomList';
@@ -16,6 +17,9 @@ export default class Chat extends Component {
             actions={this.props.actions}
             publicRoomList={this.props.publicRoomList}
             currentRoomList={this.props.currentRoomList}
+            user={this.props.user} />
+          <CreateRoom
+            actions={this.props.actions}
             user={this.props.user} />
           <CurrentRoomList
             actions={this.props.actions}

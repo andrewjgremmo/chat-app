@@ -18,7 +18,7 @@ export function getCurrentRooms(user) {
 }
 
 export function getPublicRooms() {
-  const request = axios.get(`/rooms`);
+  const request = axios.get('/rooms');
 
   return {
     type: GET_PUBLIC_ROOMS,
@@ -34,6 +34,7 @@ export function sendMessage(message) {
     payload: request
   };
 }
+
 
 export function joinRoom(user, room) {
   const request = axios.post(`/users/${user._id}/rooms`, room);
