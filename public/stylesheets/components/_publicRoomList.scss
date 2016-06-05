@@ -1,0 +1,17 @@
+.public-rooms {
+  span {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+}
+
+.public-rooms-list {
+  li {
+    cursor: pointer;
+  }
+
+  li:hover {
+    background: lightgrey;
+  }
+}

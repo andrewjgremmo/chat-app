@@ -1,0 +1,24 @@
+.current-rooms {
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  display: inline-block;
+  height: 250px;
+  padding: 5px;
+  width: 15%;
+  vertical-align: top;
+
+  .current-room-list {
+
+    li {
+      cursor: pointer;
+      &.selected {
+        font-weight: bold;
+      }
+    }
+
+    li:hover {
+      background: lightgrey;
+    }
+  }
+}

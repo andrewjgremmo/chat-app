@@ -1,0 +1,17 @@
+.invite-user {
+  span {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+}
+
+.invite-user-list {
+  li {
+    cursor: pointer;
+  }
+
+  li:hover {
+    background: lightgrey;
+  }
+}
