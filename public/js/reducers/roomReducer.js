@@ -29,7 +29,7 @@ export default function(state = INITIAL_STATE, action) {
       };
     case JOIN_ROOM:
       if (some(state.currentRoomList, {_id: action.payload.data._id})) {
-        return;
+        return state;
       }
       return { ...state,
         currentRoomList: state.currentRoomList.concat([action.payload.data]),
