@@ -17,6 +17,10 @@ export default function(state = INITIAL_STATE, action) {
     case REMOVE_USER:
       return { ...state, users: state.users.filter((user) => { user._id != action.payload.data._id })};
     case UPDATE_USER:
+      action.payload.data.rooms = action.payload.data.rooms.map((room) => {
+        return room._id;
+      });
+
       return { ...state, users: state.users.map((user) => {
           if (user._id == action.payload.data._id) {
             return action.payload.data;

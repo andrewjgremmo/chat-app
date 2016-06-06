@@ -103,11 +103,13 @@ module.exports = function(io) {
         req.user.save(function(err, user) {
           if(err){ return next(err); }
 
-          io.emit('action', {
-            type: 'UPDATE_USER',
-            payload: {
-              data: user
-            }
+          user.populate({path: 'rooms', populate: { path: 'messages' } }, function(err, user) {
+            io.emit('action', {
+              type: 'UPDATE_USER',
+              payload: {
+                data: user
+              }
+            });
           });
 
           room.populate('messages', function(err, room) {
@@ -133,11 +135,13 @@ module.exports = function(io) {
         req.user.save(function(err, user) {
           if(err){ return next(err); }
 
-          io.emit('action', {
-            type: 'UPDATE_USER',
-            payload: {
-              data: user
-            }
+          user.populate({path: 'rooms', populate: { path: 'messages' } }, function(err, user) {
+            io.emit('action', {
+              type: 'UPDATE_USER',
+              payload: {
+                data: user
+              }
+            });
           });
         });
 
@@ -154,11 +158,13 @@ module.exports = function(io) {
     req.user.save(function(err, user) {
       if(err){ return next(err); }
 
-      io.emit('action', {
-        type: 'UPDATE_USER',
-        payload: {
-          data: user
-        }
+      user.populate({path: 'rooms', populate: { path: 'messages' } }, function(err, user) {
+        io.emit('action', {
+          type: 'UPDATE_USER',
+          payload: {
+            data: user
+          }
+        });
       });
       res.json(req.room);
     });

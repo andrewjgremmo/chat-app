@@ -16,7 +16,12 @@ app.io = io;
 
 var routes = require('./routes/index')(io);
 
-mongoose.connect('mongodb://127.0.0.1/chat');
+if (app.get('env') === 'development') {
+  mongoose.connect('mongodb://127.0.0.1/chat');
+} else {
+  mongoose.connect(process.env.MONGOLAB_URI);
+}
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -63,6 +68,7 @@ var users = {
 
 io.on("connection", function( socket ) {
   socket.on("register", function (data) {
+
     if (data.payload.statusText == 'OK') {
       users[socket.id] = data.payload.data;
       users[socket.id].rooms.forEach(function(room) {
@@ -95,6 +101,15 @@ io.on("connection", function( socket ) {
 
   socket.on("joinRequest", function (room) {
     socket.join(room);
+  });
+
+  socket.on("inviteRequest", function (room) {
+    socket.emit('action', {
+      type: 'JOIN_ROOM',
+      payload: {
+        data: room
+      }
+    });
   });
 
   socket.on("disconnect", function () {

@@ -27,6 +27,7 @@ export default class Register extends Component {
           <form
             onSubmit={this.onSubmit}
           >
+            <label for="name">Please enter a username.</label>
             <input
               type="text"
               onChange={this.onChange}

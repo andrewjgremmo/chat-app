@@ -6,6 +6,7 @@ import {
   SELECT_ROOM,
   JOIN_ROOM,
 } from '../actions/roomActions';
+import some from 'lodash/some';
 
 const INITIAL_STATE = { currentRoom: undefined, currentRoomList: [], publicRoomList: [] };
 
@@ -27,6 +28,9 @@ export default function(state = INITIAL_STATE, action) {
         })
       };
     case JOIN_ROOM:
+      if (some(state.currentRoomList, {_id: action.payload.data._id})) {
+        return;
+      }
       return { ...state,
         currentRoomList: state.currentRoomList.concat([action.payload.data]),
         currentRoom: action.payload.data._id
